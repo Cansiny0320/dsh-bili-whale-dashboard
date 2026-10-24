@@ -9,13 +9,22 @@ const profile = JSON.parse(
   fs.readFileSync(path.join(installedHome, "profiles/web/package.json"), "utf8"),
 );
 const original = profile.dependencies?.["dsh-bili-whale"];
+const packageSpec = process.env.DASHBOARD_PACKAGE_SPEC;
+const port = Number(process.env.DSH_TEST_PORT ?? 3082);
 assert(original?.startsWith("link:"), "Install the original local plugin before running test:dsh");
 fs.mkdirSync(path.join(root, ".local/dsh-tests"), { recursive: true });
 fs.mkdirSync(path.join(root, "outputs"), { recursive: true });
 const userDir = fs.mkdtempSync(path.join(root, ".local/dsh-tests/run-"));
 const dshHome = path.join(userDir, ".dsh");
 const installed = startDsh(
-  ["plugin", "--profile", "web", "add", original, "link:" + root.replaceAll("\\", "/")],
+  [
+    "plugin",
+    "--profile",
+    "web",
+    "add",
+    original,
+    ...(packageSpec ? [] : ["link:" + root.replaceAll("\\", "/")]),
+  ],
   { userHome: userDir },
 );
 let installLog = "";
@@ -72,13 +81,15 @@ fs.writeFileSync(
     ],
   }),
 );
-const child = startDsh(["web", "--no-open", "--port", "3081"], { userHome: userDir });
+const child = startDsh(["web", "--no-open", "--port", String(port)], { userHome: userDir });
 let log = "";
 let loginUrl;
 for (const stream of [child.stdout, child.stderr])
   stream.on("data", (chunk) => {
     const text = chunk.toString();
-    const match = text.match(/https?:\/\/127\.0\.0\.1:3081\/[^\s]*[?&]token=[^\s]+/);
+    const match = text.match(
+      new RegExp(`https?://127\\.0\\.0\\.1:${port}/[^\\s]*[?&]token=[^\\s]+`),
+    );
     if (match) loginUrl = match[0];
     log += text.replace(/([?&]token=)[^\s&]+/g, "$1[redacted]");
   });
@@ -89,8 +100,8 @@ try {
     await new Promise((resolve) => setTimeout(resolve, 300));
   if (!loginUrl) throw new Error("DSH failed to become ready:\n" + log.slice(-14000));
   console.log("DSH host ready; launch credential kept in memory only.");
-  const origin = "http://127.0.0.1:3081";
-  assert.equal((await fetch(origin + "/whale-dashboard/")).status, 401);
+  const origin = `http://127.0.0.1:${port}`;
+  if (!packageSpec) assert.equal((await fetch(origin + "/whale-dashboard/")).status, 401);
   browser = await chromium.launch({ channel: "msedge", headless: true });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
   const page = await context.newPage();
@@ -107,6 +118,23 @@ try {
   });
   await page.goto(loginUrl);
   loginUrl = undefined;
+  if (packageSpec) {
+    const { installReleaseInDsh } = await import("./test-release-install.mjs");
+    try {
+      await installReleaseInDsh(page, packageSpec, origin);
+    } catch (error) {
+      fs.writeFileSync(
+        path.join(root, "outputs/dsh-install-failure.txt"),
+        await page.locator("body").innerText(),
+      );
+      await page.screenshot({
+        path: path.join(root, "outputs/dsh-install-failure.png"),
+        fullPage: true,
+      });
+      throw error;
+    }
+    assert.equal((await fetch(origin + "/whale-dashboard/")).status, 401);
+  }
   for (const route of ["", "diaries", "reviews", "persona", "schedule", "settings"]) {
     const response = await page.goto(origin + "/whale-dashboard/" + route);
     assert.equal(response.status(), 200, "SSR route " + route);

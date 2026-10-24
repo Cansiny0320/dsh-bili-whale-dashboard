@@ -22,3 +22,7 @@ Alterssss/dsh-bili-whale v0.4.6，commit 3e11454a5961300aa7094df0f08e630bd39999d
 Button、Input、Textarea、Switch 基于 shadcn/ui 官方 base-nova registry（MIT）并按本项目字号与无障碍需求调整。https://github.com/shadcn-ui/ui
 
 许可全文：`licenses/shadcn-ui-MIT.txt`。
+
+## 预构建插件包
+
+GitHub Release 的 `.tgz` 不包含鲸鱼娘图片。包内保留上述许可证，并在 `licenses/DEPENDENCIES.json` 记录服务端 bundle 涉及的依赖及其许可证文件；`licenses/dashboard-client.md`、`licenses/dashboard-server.md` 由前端构建工具收集。原版养鱼插件不包含在发行包中，需由用户独立安装。

@@ -8,7 +8,9 @@
 
 六个页面：概览、公开/私密日记、待审评论回复、人设与偏好、作息与监听、设置。设置包含分享与通知、请求保护、账号环境、会话轮换。
 
-## 本机运行
+## 源码开发与演示
+
+以下仅适用于开发者；普通用户在 DSH 中安装 Release 的 `.tgz`，无需这些构建步骤。完整开发与打包说明见 [开发文档](development.md)。
 
 克隆仓库后进入项目目录：
 
@@ -42,6 +44,8 @@ cd dsh-bili-whale-dashboard
 ## DSH 同源插件
 
 已在官方 `@deepseek-ai/dsh@0.2.1-rc.2` Web 宿主完成联调：认证后的六页、同源 API、配置和人设保存均通过。**未验证真实 B 站账号发送**。
+
+普通用户从 DSH「插件 → 添加插件」安装 [Release 包](https://github.com/Cansiny0320/dsh-bili-whale-dashboard/releases/latest)，启用后从「设置 → 鲸鱼娘后台」进入。先在同一实例安装并启用原版插件；本后台不会自动安装或替换原版。下面的 `link:` 方式及隔离 home 仅供源码开发与联调。
 
 使用 DSH 的本地插件安装方式，将原版插件与本项目作为 `link:` 插件加入 Web profile。插件入口为 `packages/dsh-plugin/dist/index.js`；运行目录需保留 workspace 依赖与 `apps/dashboard/dist/`。
 

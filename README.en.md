@@ -44,99 +44,74 @@ Desktop and mobile layouts are supported. Content wraps or rearranges on narrow 
 
 ## Getting started
 
-Three components work together:
+**Install and enable the original [dsh-bili-whale plugin](https://github.com/Alterssss/dsh-bili-whale) in the same DSH instance first.** It handles Bilibili login and agent tasks; this plugin provides the management interface. The two plugins are installed and upgraded independently.
 
-| Component                                                                     | Responsibility                                                                                          |
-| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| DSH Web                                                                       | Provides models, sessions and the web server.                                                           |
-| Original [dsh-bili-whale](https://github.com/Alterssss/dsh-bili-whale) plugin | Manages Bilibili login, scheduling, video viewing, diary writing and sending messages.                  |
-| This dashboard                                                                | Reads the same diaries and state; calls the original plugin's APIs to save settings and review replies. |
+The dashboard ships as a prebuilt package: **no repository clone, pnpm commands or manual build required**. The current package targets **DSH 0.2.1-rc.2**. End-to-end installation and functionality are verified with DSH Web and original plugin v0.4.6.
 
-**Install both plugins in the same DSH Web profile.** The dashboard starts with `dsh web`; it needs no separate web server. The verified combination is **DSH 0.2.1-rc.2 + original plugin v0.4.6**.
+### 1. Add the plugin in DSH
 
-### 1. Download both projects and build the dashboard
+Open **Plugins → Add plugin** in DSH and paste this complete URL:
 
-Install Git and **Node.js 24.11+ within 24.x or 26+** first. These commands use Windows PowerShell. Start in your chosen projects directory and keep the repositories side by side:
-
-```powershell
-git clone https://github.com/Alterssss/dsh-bili-whale.git
-git clone https://github.com/Cansiny0320/dsh-bili-whale-dashboard.git
-cd dsh-bili-whale-dashboard
-
-# Install project-local pnpm and dependencies, then build
-& .\scripts\bootstrap.ps1
-& .\scripts\pnpm.ps1 build
-
-# Absolute paths for the installation commands below
-$whalePlugin = (Resolve-Path ..\dsh-bili-whale).Path.Replace('\', '/')
-$whaleDashboard = (Get-Location).Path.Replace('\', '/')
+```text
+https://github.com/Cansiny0320/dsh-bili-whale-dashboard/releases/download/v0.1.0/dsh-bili-whale-dashboard-0.1.0.tgz
 ```
 
-If you already have the original repository, skip cloning it and point `$whalePlugin` to that directory. On macOS / Linux, or with pnpm already installed, build with `pnpm install --frozen-lockfile` and `pnpm build`, then use the existing-DSH commands below with your own absolute paths. The interface and detailed usage guide currently use Chinese.
+Click **Install**, then **Enable now**. If DSH requests a restart, restart that instance.
 
-### 2. Install both plugins in DSH and start it
+Alternatively, download `dsh-bili-whale-dashboard-0.1.0.tgz` from the [GitHub Release](https://github.com/Cansiny0320/dsh-bili-whale-dashboard/releases/latest) and enter the file's **absolute local path** in the same installation field. Do not extract it or choose GitHub's automatically generated **Source code** archives.
 
-**If you already use DSH Web**, run these in the same PowerShell session:
+<details>
+<summary>Command-line installation (optional)</summary>
 
-```powershell
-dsh plugin --profile web add "link:$whalePlugin" "link:$whaleDashboard"
+Existing DSH Web users can also run:
+
+```sh
+dsh plugin --profile web add https://github.com/Cansiny0320/dsh-bili-whale-dashboard/releases/download/v0.1.0/dsh-bili-whale-dashboard-0.1.0.tgz
 dsh web --port 3081
 ```
 
-If DSH is running, stop the old process after installation, then start it again. This route uses your existing DSH accounts and data. With a custom Web profile, target that same profile for both installation and startup; see the [integration guide](docs/usage.md#dsh-同源插件).
+Install and start the same profile used by the original plugin. Desktop users should use the application's Add plugin interface.
 
-**If you do not have DSH yet**, use this complete sequence instead, in the same PowerShell session, to create a project-specific environment:
+</details>
 
-```powershell
-& .\scripts\pnpm.ps1 exec npm install --prefix .tools/dsh --no-audit --no-fund @deepseek-ai/dsh@0.2.1-rc.2
-& .\scripts\pnpm.ps1 dsh web --dump-default-config
-& .\scripts\pnpm.ps1 dsh plugin --profile web add "link:$whalePlugin" "link:$whaleDashboard"
-& .\scripts\pnpm.ps1 dsh web --port 3081
-```
+### 2. Open the dashboard from DSH
 
-This environment stores its data in `.local/dsh-user/`. Configure models and Bilibili login again here: it does not automatically use accounts or data from another DSH installation. Choose one of the two routes above.
+Open **Settings → 鲸鱼娘后台 → 打开鲸鱼娘后台** in DSH. This entry checks the original plugin and tells you if it needs to be installed or enabled. Click **重新检查** (Check again) after resolving that.
 
-### 3. Complete initial setup in DSH
+The dashboard is served by the same DSH instance at `/whale-dashboard/`. For DSH on port 3081, the address is [http://127.0.0.1:3081/whale-dashboard/](http://127.0.0.1:3081/whale-dashboard/). Use the same browser where you authenticated with DSH.
 
-DSH automatically opens a browser launch URL containing authentication information. Authenticate there first, then configure the following in the **main DSH interface**:
+### 3. Initial configuration
 
-1. **Settings → Models**: configure a model provider and its credentials.
-2. **Settings → 养鱼**: sign in to Bilibili. Original v0.4.6 uses cookie import; enter `SESSDATA`, `bili_jct` and the other fields requested by the page. If your installed plugin provides a QR login option, you can use it. Login belongs to the original plugin, not this dashboard.
-3. On the same plugin settings page, enter the sharing recipient's **Bilibili UID (mid) and nickname**, save, then run **依赖体检** (dependency check). Video frame extraction requires ffmpeg; without it, visual video analysis is limited.
-4. Find the original plugin's **`bili-whale` session** in the workspace, usually under **未分组** (Ungrouped). Select an available model and configure the tool execution and working-directory permissions required by the original plugin.
+For a new original-plugin installation, configure an available model under **DSH Settings → Models**. Then use **Settings → 养鱼** to sign in to Bilibili, set the sharing recipient's UID (mid) and nickname, and run **依赖体检** (Dependency check). Use the cookie import or QR login offered by your original-plugin version. Model credentials and Bilibili login are configured there, not in this dashboard.
 
-### 4. Open the live dashboard
-
-In the **same browser where you authenticated**, open:
-
-**[http://127.0.0.1:3081/whale-dashboard/](http://127.0.0.1:3081/whale-dashboard/)**
-
-This address manages the original plugin's real data in that DSH instance. The sidebar contains six pages. Empty diary and review lists are normal for a new account. Replace `3081` if you chose a different DSH port.
+Find the `bili-whale` session created by the original plugin and confirm its model and tool execution permissions. Video frame extraction requires ffmpeg; follow the original plugin's dependency instructions.
 
 ### Daily use
 
-1. Set names, personality text and topics under **人设与偏好** (Personality and preferences), using the separate save buttons.
-2. Configure activity windows, wake counts and listeners under **作息与监听** (Schedules and listeners). Set sharing recipients, channels and notifications under **设置** (Settings), then save.
-3. Keep the **DSH process running**. The original plugin runs scheduled tasks. Closing the dashboard tab does not stop it; stopping DSH stops scheduling in that host process.
-4. Read results in **概览 / 日记** (Overview / Diaries), using the top-right refresh button for current records. Review drafts under **待审回复** (Reply reviews), then reject or approve. In live mode, approval sends a Bilibili comment.
+1. **人设与偏好** (Personality and preferences): edit names, personality text and topics, using the separate save buttons.
+2. **作息与监听 / 设置** (Schedules and listeners / Settings): configure activity windows, wake counts, listeners, sharing recipients, channels and notifications, then save.
+3. **概览 / 日记** (Overview / Diaries): read activity records and diaries. Use the top-right refresh button for current data. Empty lists are normal for a new account.
+4. **待审回复** (Reply reviews): compare drafts before rejecting or approving. Approval in live mode sends a Bilibili comment.
 
-Next time, run only the startup command for your chosen route from the project directory: `dsh web --port 3081` for an existing DSH installation, or `& .\scripts\pnpm.ps1 dsh web --port 3081` for the project-specific environment. After changing dashboard code, rebuild and restart DSH.
+Keep **DSH running**; no separate dashboard service is needed. Closing the browser tab does not stop the original tasks. Stopping DSH stops scheduling in that host process.
 
-### Just want to preview the interface?
+### Updating and uninstalling
 
-After step 1, run `& .\scripts\pnpm.ps1 preview` and open the **[standalone demo](http://127.0.0.1:4179/whale-dashboard/)**. It uses samples in `.local/demo/`, requires no DSH or Bilibili account, and changes only demo data when saving or approving. The page displays **演示数据** (Demo data).
+Remove the old dashboard plugin in DSH, install the new Release `.tgz`, and enable it. **Remove only the dashboard, keep the original plugin, and do not delete data directories.** Uninstalling this dashboard does not delete the original login state, configuration, diaries or approval records.
 
 ### Common startup problems
 
-| Problem                                        | What to check                                                                                                                                                                          |
-| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| The page always says Demo data                 | Port `4179` serves the demo. Use `/whale-dashboard/` on your DSH port for real data.                                                                                                   |
-| HTTP 401                                       | Authenticate through the launch URL opened by DSH, then open the dashboard in the same browser.                                                                                        |
-| HTTP 404                                       | Build the dashboard, install both plugins into the same Web profile and restart DSH after installation.                                                                                |
-| Existing diaries or login are missing          | Check whether you started a new project-specific environment; its data directory differs from your existing DSH installation.                                                          |
-| The dashboard opens but the agent does nothing | Check dependencies and scheduler status in DSH's plugin settings, then the model and permissions of the `bili-whale` session. Dashboard records do not prove the scheduler is running. |
+| Problem                                        | What to check                                                                                                              |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| DSH version is incompatible                    | Use the DSH version supported by the package or choose a matching Release.                                                 |
+| GitHub package cannot be downloaded            | Download the Release `.tgz` first and enter its absolute local path. An npm mirror does not replace GitHub file downloads. |
+| Original plugin required                       | Install and enable `dsh-bili-whale` in the same DSH instance, then check again.                                            |
+| HTTP 401                                       | Authenticate through the DSH launch URL, then use the same browser.                                                        |
+| HTTP 404                                       | Enable the dashboard and restart if DSH requests it. Install and browse in the same DSH instance.                          |
+| The page says Demo data                        | This is the source-development demo, normally on port 4179. Use the dashboard entry inside DSH instead.                    |
+| The dashboard opens but the agent does nothing | Check original-plugin dependencies, scheduler status, and the model and permissions of the `bili-whale` session.           |
 
-See the [usage guide](docs/usage.md) for additional installation options, data directories and recovery instructions.
+See the [usage guide](docs/usage.md) for data locations and recovery. Source builds, the standalone demo and release packaging are covered in the [development guide](docs/development.md). The interface and detailed guides currently use Chinese.
 
 ## Data and permissions
 
@@ -153,13 +128,15 @@ pnpm check
 pnpm test
 pnpm build
 pnpm test:e2e
+pnpm release:pack
+pnpm test:package
 ```
 
 Browser checks use headless Microsoft Edge. Run `pnpm test:dsh` after setting up the isolated DSH installation to test the real host. Tests do not invoke models, send real Bilibili messages or control desktop input.
 
 Currently, 23 unit/integration tests and 6 browser scenarios pass. Browser checks cover readability and overflow across all six pages at widths of 1600, 1280 and 390 pixels, plus saving, diary switching, approval confirmation and duplicate prevention. Sending from a real account has not been verified.
 
-[Usage and troubleshooting](docs/usage.md) · [Verification](docs/verification.md) · [Assets and third-party code](THIRD-PARTY-NOTICES.md)
+[Usage and troubleshooting](docs/usage.md) · [Source development and packaging](docs/development.md) · [Verification](docs/verification.md) · [Assets and third-party code](THIRD-PARTY-NOTICES.md)
 
 ## Sponsorship
 
