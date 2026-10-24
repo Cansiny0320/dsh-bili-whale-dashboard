@@ -1,0 +1,15 @@
+node_modules/
+.tools/
+.local/
+dist/
+.tanstack/
+.vite/
+*.tsbuildinfo
+test-results/
+playwright-report/
+.env*
+outputs/
+design-preview/
+docs/superpowers/
+docs/login-research.md
+apps/dashboard/public/brand/whalechan.webp

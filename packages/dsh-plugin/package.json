@@ -1,0 +1,10 @@
+{
+  "name": "@whale/dsh-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@orpc/server": "1.16.1",
+    "@whale/core": "workspace:*"
+  }
+}
