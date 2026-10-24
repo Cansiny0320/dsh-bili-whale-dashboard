@@ -20,7 +20,7 @@
 
 ## 最终命令
 
-使用 `scripts/pnpm.ps1` 调用：`check` 通过（严格类型、Oxlint、Oxfmt）；`test` 23/23 通过；`build` 通过；`test:e2e` 5/5 通过；`test:dsh` 通过。六页桌面、窄屏和真实 DSH 截图保存在本机 `outputs/`，不随源码发布。
+使用 `scripts/pnpm.ps1` 调用：`check` 通过（严格类型、Oxlint、Oxfmt）；`test` 23/23 通过；`build` 通过；`test:e2e` 5/5 通过；`test:dsh` 通过。完整测试截图保存在本机 `outputs/`；README 使用的概览截图位于 `docs/images/dashboard.png`，仅包含隔离演示数据和不带角色图片的界面。
 
 ## 参考图对齐
 
