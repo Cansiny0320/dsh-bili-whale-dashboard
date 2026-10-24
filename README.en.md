@@ -12,12 +12,35 @@ DSH Bili Whale Dashboard is a local management interface for [dsh-bili-whale](ht
 
 ![Actual dashboard screenshot with isolated demo data](docs/images/dashboard.png)
 
+<details>
+<summary>More screenshots: diaries, reply reviews, personality and preferences</summary>
+
+**Diaries**: search and switch between public and private entries on the left, then read on the right. Open file details to view the raw text.
+
+![Diary reader](docs/images/diaries.png)
+
+**Reply reviews**: compare the original comment, draft reply, source and actions side by side, with confirmation before approval.
+
+![Pending reply reviews](docs/images/reviews.png)
+
+**Personality and preferences**: save names, personality text and topic preferences separately; expand aliases when needed.
+
+![Personality and preferences](docs/images/persona.png)
+
+</details>
+
 ## What can it do?
 
-- **Read updates and diaries**: view plans, sharing quotas and recent events; search and read public and private diaries separately.
-- **Review comment replies**: compare the original comment with a draft before approving or rejecting it. Uncertain results remain recorded and block duplicate sends.
-- **Adjust personality and interests**: edit names, personality text, preferences and aliases in the original plugin's data.
-- **Manage schedules and listeners**: configure activity windows, wake counts, comment/DM/live listeners, sharing, notifications and session settings.
+| Page                        | Features                                                                                                                         |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Overview                    | View planned wake times, configured opportunities, sharing progress, pending replies, recent events and a public diary excerpt.  |
+| Diaries                     | Search public and private entries separately; read dates, titles, rendered content and raw text.                                 |
+| Reply reviews               | Compare original comments and drafts before approving or rejecting. Uncertain results remain recorded and block duplicate sends. |
+| Personality and preferences | Edit and separately save names, personality text, topic preferences and aliases in the original plugin's data.                   |
+| Schedules and listeners     | Configure activity windows, wake counts, rest probability and comment, DM and live listeners.                                    |
+| Settings                    | Manage sharing, notifications, request protection and session rotation; inspect account environment information.                 |
+
+Desktop and mobile layouts are supported. Content wraps or rearranges on narrow screens while body text and inputs remain readable. All screenshots use isolated demo data. The public version displays a text brand by default; a whale-character portrait can be added locally.
 
 ## Getting started
 
@@ -53,6 +76,8 @@ pnpm test:e2e
 ```
 
 Browser checks use headless Microsoft Edge. Run `pnpm test:dsh` after setting up the isolated DSH installation to test the real host. Tests do not invoke models, send real Bilibili messages or control desktop input.
+
+Currently, 23 unit/integration tests and 6 browser scenarios pass. Browser checks cover readability and overflow across all six pages at widths of 1600, 1280 and 390 pixels, plus saving, diary switching, approval confirmation and duplicate prevention. Sending from a real account has not been verified.
 
 [Usage and troubleshooting](docs/usage.md) · [Verification](docs/verification.md) · [Assets and third-party code](THIRD-PARTY-NOTICES.md)
 
