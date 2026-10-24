@@ -2,6 +2,8 @@
 
 [返回项目首页](../README.md)
 
+首次安装请先按首页的 [安装与接入步骤](../README.md#快速开始) 操作；那里包含两个插件的安装、DSH 首次配置、后台入口和 [日常使用流程](../README.md#日常怎么用)。本文补充数据路径、保存语义及排障细节。
+
 独立的本机管理界面，适配原版 [dsh-bili-whale](https://github.com/Alterssss/dsh-bili-whale) v0.4.6（`3e11454a5961300aa7094df0f08e630bd39999dd`）。管理原版数据和设置，不包含或启动第二个养鱼调度器。
 
 六个页面：概览、公开/私密日记、待审评论回复、人设与偏好、作息与监听、设置。设置包含分享与通知、请求保护、账号环境、会话轮换。
@@ -49,6 +51,8 @@ cd dsh-bili-whale-dashboard
 dsh plugin --profile web add link:/path/to/dsh-bili-whale link:/path/to/dsh-bili-whale-dashboard
 dsh web --port 3081
 ```
+
+使用自定义 Web profile 时，将安装命令的 `--profile web` 替换为实际名称，并用 `dsh --profile <名称> --port 3081` 启动。安装与启动必须指向同一 profile；不要把插件只装到 `desktop` 后启动 `web`。
 
 先通过 DSH 打开的启动入口建立浏览器会话，再在同一浏览器打开 `http://127.0.0.1:3081/whale-dashboard/`。直接访问而未登录会返回 401。
 
