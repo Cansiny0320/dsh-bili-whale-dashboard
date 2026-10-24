@@ -32,3 +32,26 @@ test("approved desktop layout keeps summary, diary, review and persona informati
   expect(document!.y + document!.height).toBeLessThan(850);
   await expect(page.getByLabel("别人叫她什么")).not.toBeVisible();
 });
+
+test("reading text and controls stay legible when the layout reflows", async ({ page }) => {
+  const content =
+    ".nav-item, .stat-body > span, .timeline-item, .diary-excerpt, .entry, .markdown, .review-source p, .reply-content p, .field > span, .toggle-row strong, .settings-tabs button, input[data-slot=input], textarea[data-slot=textarea]";
+  for (const width of [1600, 1280, 390]) {
+    await page.setViewportSize({ width, height: 1000 });
+    for (const route of ["", "diaries", "reviews", "persona", "schedule", "settings"]) {
+      await page.goto(route);
+      await expect(page.locator('main[data-loaded="true"]')).toBeVisible();
+      if (route === "diaries") await expect(page.locator(".markdown")).toBeVisible();
+      const tooSmall = await page.locator(content).evaluateAll((nodes) =>
+        nodes
+          .filter((node) => node.getBoundingClientRect().width > 0)
+          .filter((node) => parseFloat(getComputedStyle(node).fontSize) < 16)
+          .map((node) => ({ className: node.className, size: getComputedStyle(node).fontSize })),
+      );
+      expect(tooSmall, `${route || "overview"} at ${width}px`).toEqual([]);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+    }
+  }
+});

@@ -5,6 +5,7 @@ import { useDashboard } from "../components/shell";
 import { Panel, Field, Message, SaveButton, useConfigForm } from "../components/shared";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
+import { Button } from "../components/ui/button";
 import { api } from "../lib/api";
 export const Route = createFileRoute("/persona")({ component: Persona });
 const split = (text: string) =>
@@ -66,8 +67,17 @@ function Persona() {
     <>
       {f.controls}
       <div className="persona-layout">
-        <Panel title="人设文档" className="persona-document">
+        <Panel
+          title="人设文档"
+          className="persona-document"
+          action={
+            <Button type="submit" form="persona-identity" variant="outline" disabled={f.busy}>
+              {f.busy ? "正在保存…" : "保存称呼"}
+            </Button>
+          }
+        >
           <form
+            id="persona-identity"
             onSubmit={(e) => {
               e.preventDefault();
               void f.save({ persona: c.persona });
@@ -92,9 +102,6 @@ function Persona() {
                   onChange={(e) => f.set("persona", { ...c.persona, selfClaim: e.target.value })}
                 />
               </Field>
-            </div>
-            <div className="identity-save">
-              <SaveButton busy={f.busy} label="保存称呼" />
             </div>
           </form>
           <form
@@ -132,13 +139,13 @@ function Persona() {
               }}
             >
               <div className="form-grid">
-                <Field label="喜欢的话题（每行一个）">
+                <Field label="喜欢的话题">
                   <ListInput
                     value={c.preferences.like}
                     onChange={(v) => f.set("preferences", { ...c.preferences, like: v })}
                   />
                 </Field>
-                <Field label="不喜欢的话题（每行一个）">
+                <Field label="不喜欢的话题">
                   <ListInput
                     value={c.preferences.dislike}
                     onChange={(v) => f.set("preferences", { ...c.preferences, dislike: v })}

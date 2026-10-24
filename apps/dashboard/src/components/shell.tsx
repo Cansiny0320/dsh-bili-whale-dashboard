@@ -2,11 +2,11 @@ import { createContext, useContext, useEffect, useState, useCallback } from "rea
 import type { ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard,
-  BookOpen,
-  MessageCircle,
-  Heart,
-  Moon,
+  House,
+  NotebookText,
+  MessageSquareText,
+  ShieldCheck,
+  Clock3,
   Settings,
   RefreshCw,
   Menu,
@@ -16,11 +16,11 @@ import type { Snapshot } from "@whale/core/schema";
 import { api } from "../lib/api";
 import { Button } from "./ui/button";
 const nav = [
-  { to: "/", label: "概览", icon: LayoutDashboard },
-  { to: "/diaries", label: "日记", icon: BookOpen },
-  { to: "/reviews", label: "待审回复", icon: MessageCircle },
-  { to: "/persona", label: "人设与偏好", icon: Heart },
-  { to: "/schedule", label: "作息与监听", icon: Moon },
+  { to: "/", label: "概览", icon: House },
+  { to: "/diaries", label: "日记", icon: NotebookText },
+  { to: "/reviews", label: "待审回复", icon: MessageSquareText },
+  { to: "/persona", label: "人设与偏好", icon: ShieldCheck },
+  { to: "/schedule", label: "作息与监听", icon: Clock3 },
   { to: "/settings", label: "设置", icon: Settings },
 ] as const;
 const Context = createContext<{

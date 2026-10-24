@@ -47,15 +47,26 @@ test("settings persist, independent persona text persists, and diaries remain di
   await page.getByRole("tab", { name: "会话", exact: true }).click();
   await expect(page.getByLabel("会话轮换周期（天）")).toHaveValue("7");
   await page.goto("persona");
+  await page.getByLabel("角色名称", { exact: true }).fill("测试鲸鱼娘");
+  await page.getByRole("button", { name: "保存称呼", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("已保存");
   await page.getByLabel("人设正文", { exact: true }).fill("保持好奇，清楚表达自己的想法。");
   await page.getByRole("button", { name: "保存人设正文", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("人设正文已保存");
+  await expect(page.getByRole("status").filter({ hasText: "人设正文已保存" })).toBeVisible();
   await page.reload();
+  await expect(page.getByLabel("角色名称", { exact: true })).toHaveValue("测试鲸鱼娘");
   await expect(page.getByLabel("人设正文", { exact: true })).toHaveValue(
     "保持好奇，清楚表达自己的想法。",
   );
   await page.goto("diaries");
   await expect(page.locator(".markdown")).toContainText("潮汐");
+  await expect(page.locator(".diary-heading time")).toHaveText(/^\d{4}-\d{2}-\d{2}$/);
+  await expect(page.locator(".diary-heading h2")).toHaveText("潮汐与小小的光");
+  await page.locator(".file-details summary").click();
+  await page.getByLabel("显示原文", { exact: true }).check();
+  await expect(page.locator(".raw-diary")).toContainText(" · 潮汐与小小的光");
+  await page.getByLabel("显示原文", { exact: true }).uncheck();
+  await page.locator(".file-details summary").click();
   await page.getByRole("button", { name: "私人日记", exact: true }).click();
   await expect(page.locator(".markdown")).toContainText("留给自己的话");
   await page.getByLabel("搜索日记").fill("不存在的文字");

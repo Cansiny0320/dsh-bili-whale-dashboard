@@ -115,12 +115,16 @@ function Diaries() {
             <pre className="raw-diary">{current.text}</pre>
           ) : (
             <div className="markdown">
+              <header className="diary-heading">
+                {current.date && <time dateTime={current.date}>{current.date}</time>}
+                <h2>{current.title}</h2>
+              </header>
               <Markdown
                 remarkPlugins={[remarkGfm]}
                 skipHtml
                 components={{ img: () => null, a: ({ children }) => <span>{children}</span> }}
               >
-                {current.text}
+                {current.text.replace(/^#{1,2}[ \t]+[^\r\n]+(?:\r?\n|$)/, "")}
               </Markdown>
             </div>
           )}

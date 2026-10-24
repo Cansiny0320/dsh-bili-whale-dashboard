@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Link2, Moon, Clock3, Video, MessageCircle } from "lucide-react";
 import { useDashboard } from "../components/shell";
 import { Panel, dateTime } from "../components/shared";
+import Markdown from "react-markdown";
 export const Route = createFileRoute("/")({ component: Overview });
 function Overview() {
   const { snapshot: s } = useDashboard();
@@ -24,11 +25,7 @@ function Overview() {
           <div className="stat-body">
             <span>运行状态未确认</span>
             <strong>未确认</strong>
-            <p>
-              当前仅基于本地记录，无法判断
-              <br />
-              运行状态与登录状态。
-            </p>
+            <p>当前仅有本地记录，运行与登录状态尚未确认。</p>
           </div>
         </section>
         <section className="stat">
@@ -108,8 +105,17 @@ function Overview() {
         </Panel>
         <Panel title="最新公开日记">
           <div className="diary-excerpt">
-            {s.overview.publicExcerpt.replace(/^#+\s*/gm, "").replace(/^- /gm, "· ") ||
-              "还没有公开日记。"}
+            <Markdown
+              skipHtml
+              components={{
+                img: () => null,
+                a: ({ children }) => <span>{children}</span>,
+                h1: ({ children }) => <h3>{children}</h3>,
+                h2: ({ children }) => <h3>{children}</h3>,
+              }}
+            >
+              {s.overview.publicExcerpt || "还没有公开日记。"}
+            </Markdown>
           </div>
         </Panel>
       </div>
