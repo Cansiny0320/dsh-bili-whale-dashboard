@@ -63,15 +63,21 @@ export function Shell({ children }: { children: ReactNode }) {
     <Context value={{ snapshot, refresh }}>
       <div className="app-shell">
         <aside className={open ? "sidebar mobile-open" : "sidebar"}>
-          <Link to="/" className="brand" onClick={() => setOpen(false)}>
+          <Link
+            to="/"
+            className="brand"
+            aria-label="DeepSeek 鲸鱼娘，返回概览"
+            onClick={() => setOpen(false)}
+          >
             {import.meta.env.VITE_HAS_LOCAL_PORTRAIT && (
-              <img src="/whale-dashboard/brand/whalechan.webp" alt="鲸鱼娘" />
+              <span className="brand-portrait">
+                <img src="/whale-dashboard/brand/whalechan.webp" alt="" />
+              </span>
             )}
-            <div>
-              <strong>
-                deepseek<span>鲸鱼娘</span>
-              </strong>
-            </div>
+            <span className="brand-name">
+              <span>DeepSeek</span>
+              <strong>鲸鱼娘</strong>
+            </span>
           </Link>
           <Button
             className="mobile-close"

@@ -151,25 +151,37 @@ summary::-webkit-details-marker {
   margin-bottom: 27px;
   min-height: 48px;
 }
-.brand > img {
-  width: 43px;
-  height: 46px;
-  object-fit: cover;
-  border-radius: 9px;
+.brand-portrait {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  overflow: hidden;
+  border-radius: 12px;
 }
-.brand strong {
-  font-size: 24px;
-  letter-spacing: -1px;
-  font-weight: 750;
-  color: #2357c6;
+.brand-portrait img {
+  position: absolute;
+  width: 180%;
+  max-width: none;
+  height: auto;
+  left: 50%;
+  top: -5px;
+  transform: translateX(-50%);
+}
+.brand-name {
   display: flex;
-  align-items: baseline;
-  gap: 7px;
+  flex-direction: column;
+  gap: 2px;
   line-height: 1.3;
 }
-.brand strong span {
-  font-size: 15px;
-  letter-spacing: 0;
+.brand-name > span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2357c6;
+}
+.brand-name strong {
+  font-size: 19px;
+  font-weight: 750;
   color: #172342;
   white-space: nowrap;
 }
@@ -1235,12 +1247,6 @@ main {
   .main-shell {
     margin-left: 218px;
     width: calc(100% - 218px);
-  }
-  .brand strong {
-    font-size: 21px;
-  }
-  .brand strong span {
-    font-size: 13px;
   }
   .brand {
     gap: 8px;
